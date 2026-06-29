@@ -1,0 +1,15 @@
+import pandas as pd
+import re
+
+url = "https://datahub.io/core/country-list/_r/-/data.csv"
+df = pd.read_csv(url)
+
+def letters_only_len(s: str) -> int:
+    # letters only, including non-ASCII letters
+    return len(re.findall(r"\p{L}", str(s), flags=re.UNICODE))
+
+df["letters_len"] = df["Name"].apply(letters_only_len)
+
+out = df.sort_values(["letters_len", "Name"], ascending=[False, True])
+for _, row in out.iterrows():
+    print(f"{row['letters_len']:3d}  {row['Name']}")
